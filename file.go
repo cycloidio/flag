@@ -9,6 +9,9 @@ import (
 type File string
 
 func (f *File) UnmarshalFlag(value string) error {
+    // backup value used in case of refresh
+	*f = File(value)
+
 	stat, err := os.Stat(value)
 	if err != nil {
 		return err
@@ -30,4 +33,9 @@ func (f *File) UnmarshalFlag(value string) error {
 
 func (f File) Path() string {
 	return string(f)
+}
+
+// Reload reloads the value of the Keys
+func (f File) Reload() error {
+	return f.UnmarshalFlag(f.Path())
 }
